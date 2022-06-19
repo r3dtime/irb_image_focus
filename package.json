@@ -1,0 +1,33 @@
+{
+  "name": "irb_image_focus",
+  "version": "1.0.0",
+  "description": "Select image and set focus",
+  "main": "dist/irb_image_focus.cjs.js",
+  "module": "dist/irb_image_focus.esm.js",
+  "browser": "dist/irb_image_focus.umd.js",
+  "iife": "dist/bundle.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "node test/spec",
+    "pretest": "npm run build"
+  },
+  "keywords": ["js", "image", "focus"],
+  "author": "Ruslan Ismailov",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
+    "rollup": "^2.75.6",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "D": "^1.0.0"
+  }
+}

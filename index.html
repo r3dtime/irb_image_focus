@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .row {
+            width: 100%;
+            min-height: 10px;
+        }
+        .col-4 {
+            width: 25%;
+            float: left;
+            display: inline-block;
+        }
+    </style>
+    <script src="dist/bundle.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-4">
+            <div class="demo">
+                Some text
+                <p>paragraph</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        irb_image_focus.link('.demo', {
+            inputFile: 'profile',
+            inputPos: 'profile_pos',
+        });
+    </script>
+</body>
+</html>
