@@ -13,7 +13,7 @@
   },
   "keywords": ["js", "image", "focus"],
   "author": "Ruslan Ismailov",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.18.5",
     "@babel/preset-env": "^7.18.2",

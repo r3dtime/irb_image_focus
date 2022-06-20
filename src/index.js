@@ -13,6 +13,12 @@ const links = (selector, props) => {
             svg: '<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="close" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="ant-design:close-square-filled"><rect id="ViewBox" x="0" y="0" width="40" height="40"></rect><path d="M34.375,4.375 L5.625,4.375 C4.93359375,4.375 4.375,4.93359375 4.375,5.625 L4.375,34.375 C4.375,35.0664062 4.93359375,35.625 5.625,35.625 L34.375,35.625 C35.0664062,35.625 35.625,35.0664062 35.625,34.375 L35.625,5.625 C35.625,4.93359375 35.0664062,4.375 34.375,4.375 Z M26.4101562,25.6992188 C26.5820312,25.9023438 26.4375,26.2109375 26.171875,26.2109375 L23.8710938,26.2109375 C23.6875,26.2109375 23.5117188,26.1289062 23.390625,25.9882812 L20,21.9453125 L16.609375,25.9882812 C16.4921875,26.1289062 16.3164062,26.2109375 16.1289062,26.2109375 L13.828125,26.2109375 C13.5625,26.2109375 13.4179688,25.9023438 13.5898437,25.6992188 L18.3671875,20 L13.5898437,14.3007813 C13.5112207,14.2083243 13.4936637,14.0785376 13.5448959,13.9685143 C13.5961281,13.858491 13.7067602,13.7883954 13.828125,13.7890578 L16.1289062,13.7890578 C16.3125,13.7890578 16.4882812,13.8710938 16.609375,14.0117188 L20,18.0546875 L23.390625,14.0117188 C23.5078125,13.8710938 23.6835937,13.7890578 23.8710937,13.7890578 L26.171875,13.7890578 C26.4375,13.7890578 26.5820312,14.0976562 26.4101562,14.3007813 L21.6328125,20 L26.4101562,25.6992188 L26.4101562,25.6992188 Z" id="Shape" fill="#000000" fill-rule="nonzero"></path></g></g></svg>',
             width: 40,
             height: 40,
+        },
+        focus: {
+            width: 100,
+            height: 100,
+            border: 'solid 2px black',
+            borderColor: '#00000066'
         }
     };
     props = typeof props === 'object' ? {...defs, ...props} : defs;
@@ -49,10 +55,10 @@ const links = (selector, props) => {
         w.appendChild(inputPos);
 
         const focus = document.createElement('div');
-        focus.style.width = '100px';
-        focus.style.height = '100px';
-        focus.style.border = 'solid 2px black';
-        focus.style.backgroundColor = '#00000066';
+        focus.style.width = props.focus.width + 'px';
+        focus.style.height = props.focus.height + 'px';
+        focus.style.border = props.focus.border;
+        focus.style.backgroundColor = props.focus.borderColor;
         focus.style.display = 'none';
         focus.style.cursor = 'pointer';
         focus.style.position = 'absolute';
@@ -103,6 +109,10 @@ const links = (selector, props) => {
             closeBtn.style.display = 'none';
             focus.style.display = 'none';
             w.style.height = w.clientWidth + 'px';
+            input.value = '';
+            pos = { x: 50, y: 50 };
+            focus.style.left = (w.clientWidth / 2 - props.focus.width / 2) + 'px';
+            focus.style.top = (w.clientHeight / 2 - props.focus.height / 2) + 'px';
         };
         w.appendChild(closeBtn);
 
@@ -117,8 +127,11 @@ const links = (selector, props) => {
                 let img2 = new Image();
                 let objectUrl = _URL.createObjectURL(e.target.files[0]);
                 img2.onload = (e) => {
-                    let height = parseInt((w.clientWidth * (e.path[0].height/e.path[0].width)) + '');
+                    let height = parseInt((w.clientWidth * (img2.height/img2.width)) + '');
                     w.style.height = height + 'px';
+                    pos = { x: 50, y: 50 };
+                    focus.style.left = (w.clientWidth / 2 - props.focus.width / 2) + 'px';
+                    focus.style.top = (height / 2 - props.focus.height / 2) + 'px';
                 };
                 img2.src = objectUrl;
                 let reader = new FileReader();
