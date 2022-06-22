@@ -4,6 +4,10 @@ const links = (selector, props) => {
         inputFile: 'irb_image_focus',
         inputPos: 'irb_image_focus_size',
         accept: ['png', 'jpg', 'jpeg'],
+        minSize: {
+            width: 300,
+            height: 300
+        },
         loading: {
             svg: '<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="picture" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect id="ViewBox" x="-1" y="4" width="80" height="80"></rect><path d="M25.6666667,28.691358 C25.6666667,24.8730931 22.5713514,21.7777778 18.7530864,21.7777778 C14.9348215,21.7777778 11.8395062,24.8730931 11.8395062,28.691358 C11.8395062,32.509623 14.9348215,35.6049383 18.7530864,35.6049383 C22.5713514,35.6049383 25.6666667,32.509623 25.6666667,28.691358 L25.6666667,28.691358 Z M15.0658436,28.691358 C15.0658436,26.6549501 16.7166785,25.0041152 18.7530864,25.0041152 C20.7894944,25.0041152 22.4403292,26.6549501 22.4403292,28.691358 C22.4403292,30.727766 20.7894944,32.3786008 18.7530864,32.3786008 C16.7166785,32.3786008 15.0658436,30.727766 15.0658436,28.691358 L15.0658436,28.691358 Z" id="Shape" fill="#000000" fill-rule="nonzero"></path><path d="M37.221566,50.0118607 L28.3622083,41.2738065 C27.4983379,40.426819 26.103155,40.426819 25.2392847,41.2738065 L11.8395062,54.6648746 L11.8395062,60.8470479 L26.8782659,46.0142009 L34.1650876,53.0920248 L25.8594397,61.2839506 L31.9502481,61.2839506 L50.6656413,42.8248111 L65.1728395,57.0678395 L65.1728395,50.9075112 L52.3046225,38.2154875 C51.4407521,37.3685001 50.0455692,37.3685001 49.1816989,38.2154875 L37.221566,50.0118607 Z" id="Path" fill="#000000" fill-rule="nonzero"></path><path d="M70.6049383,33.3777778 L70.6049383,70.6666667 L8.38271605,70.6666667 L8.38271605,17.3333333 L49.4938272,17.3333333 C49.4996441,15.8305556 49.7089536,14.3354876 50.1160494,12.8888889 L8.38271605,12.8888889 C5.92811716,12.8888889 3.9382716,14.8787344 3.9382716,17.3333333 L3.9382716,70.6666667 C3.9382716,73.1212656 5.92811716,75.1111111 8.38271605,75.1111111 L70.6049383,75.1111111 C73.0595372,75.1111111 75.0493827,73.1212656 75.0493827,70.6666667 L75.0493827,31.4222222 C73.6720646,32.2889669 72.1744796,32.9479043 70.6049383,33.3777778 Z" id="Path" fill="#000000" fill-rule="nonzero"></path><circle id="Oval" fill="#000000" fill-rule="nonzero" cx="65.6666667" cy="17.3333333" r="11.3580247"></circle><polygon id="Path" points="-1 4 79 4 79 84 -1 84"></polygon></g></svg>',
             width: 80,
@@ -42,6 +46,7 @@ const links = (selector, props) => {
 
         let img = w.getBoundingClientRect();
         const updatePosition = (e) => {
+            if (!isDown) { return; }
             const x =  Math.round(inPercent(e.clientX - img.x, img.width));
             const y = Math.round(inPercent(e.clientY - img.y, img.height));
             pos.x = x <= 0 ? 0 : (x >= 100 ? 100 : x);
@@ -63,6 +68,7 @@ const links = (selector, props) => {
         focus.style.cursor = 'pointer';
         focus.style.position = 'absolute';
         const updateDot = () => {
+            if (!isDown) { return; }
             focus.style.left = (inNumber(pos.x, img.width) - (focus.offsetWidth / 2)) + 'px';
             focus.style.top = (inNumber(pos.y, img.height) - (focus.offsetHeight / 2)) + 'px';
         }
@@ -73,12 +79,28 @@ const links = (selector, props) => {
             updateDot()
         }
         focus.addEventListener('mousedown', (e) => {
-            if (!insideContainment(e.clientX, e.clientY, w.getBoundingClientRect())) { return; }
+            img = w.getBoundingClientRect();
+            if (!insideContainment(e.clientX, e.clientY, img)) { return; }
             isDown = true;
             updatePosition(e)
             updateDot()
         }, true);
+        /*
+        w.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            isDown = true;
+            const x =  Math.round(inPercent(e.offsetX, e.target.clientWidth));
+            const y = Math.round(inPercent(e.offsetY, e.target.clientHeight));
+            pos.x = x <= 0 ? 0 : (x >= 100 ? 100 : x);
+            pos.y = y <= 0 ? 0 : (y >= 100 ? 100 : y);
+            updateDot()
+        }, true);
+        */
         focus.addEventListener('mouseup', (e) => {
+            isDown = false;
+            inputPos.value = pos.x + 'x' + pos.y;
+        }, true);
+        document.addEventListener('mouseup', (e) => {
             isDown = false;
             inputPos.value = pos.x + 'x' + pos.y;
         }, true);
@@ -129,6 +151,7 @@ const links = (selector, props) => {
                 img2.onload = (e) => {
                     let height = parseInt((w.clientWidth * (img2.height/img2.width)) + '');
                     w.style.height = height + 'px';
+                    img = w.getBoundingClientRect();
                     pos = { x: 50, y: 50 };
                     focus.style.left = (w.clientWidth / 2 - props.focus.width / 2) + 'px';
                     focus.style.top = (height / 2 - props.focus.height / 2) + 'px';
